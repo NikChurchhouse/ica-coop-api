@@ -23,17 +23,18 @@ async def get_ica_specials():
     
     offers = []
     for item in soup.select(".offer-card__body"):
-        product = item.select_one(".offer-card__name")
-        price = item.select_one(".offer-card__price")
-        valid_until = "unbekannt"  # ICA zeigt manchmal kein Enddatum direkt an
+        product_tag = item.select_one(".offer-card__name")
+        price_tag = item.select_one(".offer-card__price")
+        
+        if not product_tag or not price_tag:
+            continue  # Überspringe, wenn Produkt oder Preis fehlt
 
-        if product and price:
-            offers.append(SpecialOffer(
-                store="ICA",
-                product=product.get_text(strip=True),
-                price=price.get_text(strip=True),
-                valid_until=valid_until
-            ))
+        offers.append(SpecialOffer(
+            store="ICA",
+            product=product_tag.get_text(strip=True),
+            price=price_tag.get_text(strip=True),
+            valid_until="unbekannt"
+        ))
 
     return offers
 
@@ -45,16 +46,17 @@ async def get_coop_specials():
     
     offers = []
     for item in soup.select(".product-card"):
-        product = item.select_one(".product-card-title")
-        price = item.select_one(".product-card-price")
-        valid_until = "unbekannt"  # Coop zeigt manchmal kein Enddatum direkt an
+        product_tag = item.select_one(".product-card-title")
+        price_tag = item.select_one(".product-card-price")
+        
+        if not product_tag or not price_tag:
+            continue  # Überspringe, wenn Produkt oder Preis fehlt
 
-        if product and price:
-            offers.append(SpecialOffer(
-                store="Coop",
-                product=product.get_text(strip=True),
-                price=price.get_text(strip=True),
-                valid_until=valid_until
-            ))
+        offers.append(SpecialOffer(
+            store="Coop",
+            product=product_tag.get_text(strip=True),
+            price=price_tag.get_text(strip=True),
+            valid_until="unbekannt"
+        ))
 
     return offers
