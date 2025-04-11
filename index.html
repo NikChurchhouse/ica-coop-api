@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICA & Coop Sonderangebote</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #offers {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .offer-item {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ICA & Coop Sonderangebote</h1>
+  <button onclick="fetchOffers('ica')">ICA Angebote</button>
+  <button onclick="fetchOffers('coop')">Coop Angebote</button>
+
+  <div id="offers"></div>
+
+  <script>
+    async function fetchOffers(store) {
+      const offersDiv = document.getElementById('offers');
+      offersDiv.innerHTML = 'Lade Angebote...';
+      
+      try {
+        const response = await fetch(`https://ica-coop-api.onrender.com/offers/${store}`);
+        const data = await response.json();
+
+        offersDiv.innerHTML = '';
+        data.forEach(offer => {
+          const offerItem = document.createElement('div');
+          offerItem.className = 'offer-item';
+          offerItem.innerHTML = `
+            <strong>${offer.title}</strong><br>
+            ${offer.price} SEK<br>
+            ${offer.description || ''}
+          `;
+          offersDiv.appendChild(offerItem);
+        });
+
+      } catch (error) {
+        offersDiv.innerHTML = 'Fehler beim Laden der Angebote.';
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
